@@ -6,6 +6,12 @@ import {createSiteFormTemplate} from './view/travel-form-view';
 import {createSiteFormEditorTemplate} from './view/travel-form-editor-view';
 import {createSiteDestinationPointTemplate} from './view/trave-destination-point-view';
 import {renderTemplate, renderPosition} from './render';
+import {generateTask} from './mock/test-data';
+
+// const destinationPointsAmount = 3;
+//
+// const tasks = Array.from({length: destinationPointsAmount}, generateTask);
+// console.log(tasks);
 
 const siteHeader = document.querySelector('.page-header');
 const siteMenuContainer = siteHeader.querySelector('.trip-controls__navigation');
@@ -29,10 +35,11 @@ renderTemplate(siteListPoints, createSiteFormTemplate(), renderPosition.BEFOREEN
 
 renderTemplate(siteListPoints, createSiteFormEditorTemplate(), renderPosition.AFTERBEGIN);
 
-const destinationPointsAmount = 3;
+const destinationPointsAmount = 10;
 
 for (let i = 0; i < destinationPointsAmount; i++) {
-  renderTemplate(siteListPoints, createSiteDestinationPointTemplate(), renderPosition.BEFOREEND);
+  const tasks = Array.from({length: destinationPointsAmount}, generateTask);
+  renderTemplate(siteListPoints, createSiteDestinationPointTemplate(tasks[i]), renderPosition.BEFOREEND);
 }
 
 
