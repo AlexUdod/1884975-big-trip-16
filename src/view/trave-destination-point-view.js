@@ -1,4 +1,6 @@
-export const createSiteDestinationPointTemplate = (object) => (
+import {createElement} from '../render';
+
+const createSiteDestinationPointTemplate = (object) => (
   `<li class="trip-events__item">
     <div class="event">
       <time class="event__date" datetime="2019-03-18">${object.date.month} ${object.date.day}</time>
@@ -37,3 +39,27 @@ export const createSiteDestinationPointTemplate = (object) => (
     </div>
   </li>`
 );
+
+export default class SiteDestinationPoint {
+  #element = null;
+  #data = null;
+
+  constructor(data) {
+    this.#data = data;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+    return this.#element;
+  }
+
+  get template() {
+    return createSiteDestinationPointTemplate(this.#data);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}

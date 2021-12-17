@@ -1,4 +1,6 @@
-export const createSiteFormEditorTemplate = () => (
+import {createElement} from "../render";
+
+const createSiteFormEditorTemplate = () => (
   `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
       <header class="event__header">
@@ -155,3 +157,22 @@ export const createSiteFormEditorTemplate = () => (
     </form>
   </li>`
 );
+
+export default class SiteFormEditor {
+  #element = null;
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+    return this.#element;
+  }
+
+  get template() {
+    return createSiteFormEditorTemplate();
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}
