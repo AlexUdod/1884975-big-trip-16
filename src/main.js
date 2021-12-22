@@ -6,6 +6,7 @@ import SiteForm from './view/travel-form-view';
 import SiteFormEditor from './view/travel-form-editor-view';
 import SiteDestinationPoint from './view/trave-destination-point-view';
 import SiteEmptyList from './view/travel-list-empty-view';
+import SiteNewPointWithoutDestination from './view/travel-new-point-without-destination-view';
 import {render, RenderPosition} from './render';
 import {generateTask} from './mock/test-data';
 
@@ -15,10 +16,11 @@ const siteMenuContainer = siteHeader.querySelector('.trip-controls__navigation')
 const siteFiltersContainer = siteHeader.querySelector('.trip-controls__filters');
 
 const siteMain = document.querySelector('.page-main');
+const siteContent = siteMain.querySelector('.page-body__container');
 const siteSortContainer = siteMain.querySelector('.trip-events');
 
 const listComponent = new SiteList();
-const destinationPointsAmount = 0;
+const destinationPointsAmount = 2;
 
 render(siteMenuContainer, new SiteMenu().element, RenderPosition.BEFOREEND);
 
@@ -26,17 +28,17 @@ render(siteFiltersContainer, new SiteFilters().element, RenderPosition.BEFOREEND
 
 if (destinationPointsAmount < 1) {
   const emptyPage = new SiteEmptyList();
-  const addNewPoint = new SiteForm();
+  const addNewPoint = new SiteNewPointWithoutDestination();
 
   const replaceEmptyToPoint = () => {
-    siteMain.replaceChild(emptyPage.element, addNewPoint.element);
+    siteContent.replaceChild(addNewPoint.element, emptyPage.element);
   };
 
   document.querySelector('.trip-main__event-add-btn').addEventListener('click', function (evt) {
     replaceEmptyToPoint();
   });
 
-  render(siteMain, emptyPage.element, RenderPosition.BEFOREEND);
+  render(siteContent, emptyPage.element, RenderPosition.BEFOREEND);
 } else {
 
   render(siteSortContainer, new SiteSort().element, RenderPosition.BEFOREEND);
@@ -47,10 +49,14 @@ if (destinationPointsAmount < 1) {
 
     const replaceCardToForm = () => {
       taskListElement.replaceChild(taskEditComponent.element, taskComponent.element);
+      taskEditComponent.element.setAttribute('open-editor', '');
     };
 
     const replaceFormToCard = () => {
-      taskListElement.replaceChild(taskComponent.element, taskEditComponent.element);
+      if (taskEditComponent.element.hasAttribute('open-editor')) {
+        taskEditComponent.element.removeAttribute('open-editor', '');
+        taskListElement.replaceChild(taskComponent.element, taskEditComponent.element);
+      }
     };
 
     taskComponent.element.querySelector('.event__rollup-btn').addEventListener('click', function () {
@@ -66,12 +72,11 @@ if (destinationPointsAmount < 1) {
       replaceFormToCard();
     });
 
-    document.onkeydown = function (evt) {
-      evt = evt || window.event;
+    document.addEventListener('keydown', function (evt) {
       if (evt.keyCode === 27) {
         replaceFormToCard();
       }
-    };
+    });
 
     render(listComponent.element, taskComponent.element, RenderPosition.BEFOREEND);
   };
